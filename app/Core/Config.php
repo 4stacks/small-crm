@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Core;
+
 class Config {
     private static $config = [];
     private static $instance = null;

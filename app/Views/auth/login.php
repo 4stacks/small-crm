@@ -1,31 +1,29 @@
-<?php require_once APP_ROOT . '/Views/layouts/header.php'; ?>
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Login</div>
                 <div class="card-body">
-                    <?php if (isset($data['error'])): ?>
+                    <?php if (isset($error)): ?>
                         <div class="alert alert-danger">
-                            <?php echo $data['error']; ?>
+                            <?php echo $error; ?>
                         </div>
                     <?php endif; ?>
                     
                     <form method="POST" action="/login">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="login-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="login-email" name="email" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <label for="login-password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="login-password" name="password" required>
                         </div>
                         
                         <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
+                            <input type="checkbox" class="form-check-input" id="login-remember" name="remember">
+                            <label class="form-check-label" for="login-remember">Remember Me</label>
                         </div>
                         
                         <div class="d-grid">
@@ -43,5 +41,3 @@
         </div>
     </div>
 </div>
-
-<?php require_once APP_ROOT . '/Views/layouts/footer.php'; ?>

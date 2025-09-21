@@ -7,8 +7,11 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Define root path
+// Define paths
 define('ROOT_PATH', dirname(__DIR__));
+define('APP_ROOT', ROOT_PATH . '/app');
+define('PUBLIC_PATH', ROOT_PATH . '/public');
+define('STORAGE_PATH', ROOT_PATH . '/storage');
 
 // Require the autoloader
 require_once ROOT_PATH . '/app/Core/Autoloader.php';

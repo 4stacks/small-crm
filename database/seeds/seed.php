@@ -1,14 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../app/Core/Database.php';
+require_once __DIR__ . '/../../app/Core/Database.php';
+
+use App\Core\Database;
 
 class Seeder {
     private $db;
     private $pdo;
 
     public function __construct() {
-        $this->db = Database::getInstance();
-        $this->pdo = $this->db->getConnection();
+        $this->pdo = Database::getInstance();
     }
 
     public function run() {

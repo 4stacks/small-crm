@@ -1,4 +1,4 @@
-<?php require_once APP_ROOT . '/Views/layouts/header.php'; ?>
+<?php $view->includeView("layouts/header"); ?>
 
 <div class="container py-4">
     <?php if (isset($data['ticket'])): ?>
@@ -108,4 +108,4 @@
     <?php endif; ?>
 </div>
 
-<?php require_once APP_ROOT . '/Views/layouts/footer.php'; ?>
+<?php $view->includeView("layouts/footer"); ?>

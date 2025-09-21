@@ -1,21 +1,19 @@
 <?php
 
-require_once __DIR__ . '/../app/Core/Database.php';
+require_once __DIR__ . '/../bootstrap.php';
+
+use App\Core\Database;
 
 class Migration {
     private $db;
     private $pdo;
 
     public function __construct() {
-        $this->db = Database::getInstance();
-        $this->pdo = $this->db->getConnection();
+        $this->pdo = Database::getInstance();
     }
 
     public function createTables() {
         try {
-            // Start transaction
-            $this->pdo->beginTransaction();
-
             // Users table
             $this->pdo->exec("CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,43 +72,31 @@ class Migration {
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
-            // Commit transaction
-            $this->pdo->commit();
             echo "Database tables created successfully!\n";
             return true;
-
         } catch (PDOException $e) {
-            // Rollback transaction on error
-            $this->pdo->rollBack();
             echo "Error creating tables: " . $e->getMessage() . "\n";
             return false;
         }
     }
 
     public function dropTables() {
+        $tables = [
+            'activity_logs',
+            'login_attempts',
+            'comments',
+            'tickets',
+            'users'
+        ];
+        
         try {
-            $this->pdo->beginTransaction();
-
-            // Drop tables in reverse order of dependencies
-            $tables = [
-                'activity_logs',
-                'login_attempts',
-                'comments',
-                'tickets',
-                'users'
-            ];
-
             foreach ($tables as $table) {
                 $this->pdo->exec("DROP TABLE IF EXISTS $table");
                 echo "Dropped table: $table\n";
             }
-
-            $this->pdo->commit();
             echo "All tables dropped successfully!\n";
             return true;
-
         } catch (PDOException $e) {
-            $this->pdo->rollBack();
             echo "Error dropping tables: " . $e->getMessage() . "\n";
             return false;
         }

@@ -4,6 +4,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Load bootstrap file
+require_once __DIR__ . '/bootstrap.php';
+
 // Check for --fresh flag
 $fresh = in_array('--fresh', $argv);
 

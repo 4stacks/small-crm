@@ -36,9 +36,9 @@ class Database
     {
         $this->config = [
             'host' => getenv('DB_HOST') ?: 'db',
-            'name' => getenv('DB_DATABASE') ?: 'small_crm',
-            'user' => getenv('DB_USERNAME') ?: 'crm_user',
-            'pass' => getenv('DB_PASSWORD') ?: 'crm_password'
+            'name' => getenv('DB_NAME') ?: 'small_crm',
+            'user' => getenv('DB_USER') ?: 'crm_user',
+            'pass' => getenv('DB_PASS') ?: 'crm_password'
         ];
 
         $this->connect();
@@ -53,7 +53,7 @@ class Database
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        return self::$instance->getConnection();
+        return self::$instance->connection;
     }
 
     /**
@@ -99,7 +99,8 @@ class Database
     /**
      * Prevent unserializing of the instance
      */
-    private function __wakeup()
+    public function __wakeup()
     {
+        throw new \Exception("Cannot unserialize singleton");
     }
 }

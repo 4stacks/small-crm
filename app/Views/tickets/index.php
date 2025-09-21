@@ -1,4 +1,4 @@
-<?php require_once APP_ROOT . '/Views/layouts/header.php'; ?>
+<?php $view->includeView("layouts/header"); ?>
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -58,4 +58,4 @@
     <?php endif; ?>
 </div>
 
-<?php require_once APP_ROOT . '/Views/layouts/footer.php'; ?>
+<?php $view->includeView("layouts/footer"); ?>

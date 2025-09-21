@@ -3,10 +3,16 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Core\Controller;
 
 class AuthController extends Controller
 {
     private $user;
+    
+    private function renderView($view, $data = []) {
+        $content = $this->view($view, $data);
+        echo $content;
+    }
 
     public function __construct()
     {
@@ -30,10 +36,10 @@ class AuthController extends Controller
                 exit;
             } else {
                 $error = 'Invalid email or password';
-                $this->render('auth/login', ['error' => $error]);
+                $this->renderView('auth/login', ['error' => $error]);
             }
         } else {
-            $this->render('auth/login');
+            $this->renderView('auth/login');
         }
     }
 
@@ -60,9 +66,9 @@ class AuthController extends Controller
                 }
             }
             
-            $this->render('auth/register', ['errors' => $errors, 'data' => $data]);
+            $this->renderView('auth/register', ['errors' => $errors, 'data' => $data]);
         } else {
-            $this->render('auth/register');
+            $this->renderView('auth/register');
         }
     }
 
@@ -88,13 +94,13 @@ class AuthController extends Controller
                 // TODO: Implement email sending
                 
                 $message = 'Password reset instructions have been sent to your email';
-                $this->render('auth/forgot-password', ['message' => $message]);
+                $this->renderView('auth/forgot-password', ['message' => $message]);
             } else {
                 $error = 'Email not found';
-                $this->render('auth/forgot-password', ['error' => $error]);
+                $this->renderView('auth/forgot-password', ['error' => $error]);
             }
         } else {
-            $this->render('auth/forgot-password');
+            $this->renderView('auth/forgot-password');
         }
     }
 

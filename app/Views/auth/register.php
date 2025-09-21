@@ -1,4 +1,4 @@
-<?php require_once APP_ROOT . '/Views/layouts/header.php'; ?>
+<?php $view->includeView("layouts/header"); ?>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -48,4 +48,4 @@
     </div>
 </div>
 
-<?php require_once APP_ROOT . '/Views/layouts/footer.php'; ?>
+<?php $view->includeView("layouts/footer"); ?>

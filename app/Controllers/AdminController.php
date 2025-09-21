@@ -2,120 +2,82 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Models\Admin;
+use App\Core\View;
 use App\Models\User;
 use App\Models\Ticket;
+use App\Models\ActivityLog;
 
-class AdminController extends Controller {
-    private $adminModel;
-    private $userModel;
-    private $ticketModel;
-
-    public function __construct() {
-        $this->adminModel = new Admin();
-        $this->userModel = new User();
-        $this->ticketModel = new Ticket();
+class AdminController extends Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        
+        // Ensure user is authenticated and is an admin
+        if (!$this->auth->isAuthenticated() || !$this->auth->isAdmin()) {
+            $this->redirect('/login');
+        }
     }
 
-    public function index() {
-        if (!isset($_SESSION['alogin'])) {
-            return $this->view('admin/login');
-        }
-        
-        $this->redirect('/admin/home');
-    }
-
-    public function home() {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        // Get statistics and data for dashboard
-        $stats = [
-            'users' => count($this->userModel->findAll()),
-            'tickets' => count($this->ticketModel->findAll())
+    public function index()
+    {
+        $data = [
+            'title' => 'Admin Dashboard',
+            'totalUsers' => (new User())->count(),
+            'totalTickets' => (new Ticket())->count(),
+            'recentActivity' => (new ActivityLog())->getRecent(5)
         ];
-        
-        return $this->view('admin/home', ['stats' => $stats]);
+
+        return $this->view('admin/dashboard', $data);
     }
 
-    public function users() {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        $users = $this->userModel->findAll();
-        return $this->view('admin/users', ['users' => $users]);
+    public function users()
+    {
+        $data = [
+            'title' => 'Manage Users',
+            'users' => (new User())->all()
+        ];
+
+        return $this->view('admin/users', $data);
     }
 
-    public function editUser($id) {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        $user = $this->userModel->findById($id);
-        
-        if ($this->isPost()) {
-            $data = [
-                'name' => $this->getPost('name'),
-                'mobile' => $this->getPost('mobile'),
-                'gender' => $this->getPost('gender')
-            ];
-            
-            if ($this->userModel->update($id, $data)) {
-                $_SESSION['msg'] = "User updated successfully";
-            } else {
-                $_SESSION['msg'] = "Failed to update user";
-            }
-            
-            $this->redirect('/admin/users');
-        }
-        
-        return $this->view('admin/edit-user', ['user' => $user]);
+    public function tickets()
+    {
+        $data = [
+            'title' => 'Manage Tickets',
+            'tickets' => (new Ticket())->all()
+        ];
+
+        return $this->view('admin/tickets', $data);
     }
 
-    public function accessLogs() {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        $logs = $this->adminModel->getUserAccessLogs();
-        return $this->view('admin/access-logs', ['logs' => $logs]);
+    public function activity()
+    {
+        $data = [
+            'title' => 'Activity Logs',
+            'logs' => (new ActivityLog())->all()
+        ];
+
+        return $this->view('admin/activity', $data);
     }
 
-    public function changePassword() {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        if ($this->isPost()) {
-            $oldPass = $this->getPost('oldpass');
-            $newPass = $this->getPost('newpass');
-            
-            $admin = $this->adminModel->authenticate($_SESSION['alogin'], $oldPass);
-            
-            if ($admin) {
-                if ($this->adminModel->updatePassword($admin['id'], $newPass)) {
-                    $_SESSION['msg1'] = "Password changed successfully";
-                } else {
-                    $_SESSION['msg1'] = "Failed to change password";
-                }
-            } else {
-                $_SESSION['msg1'] = "Old password is incorrect";
-            }
-            
-            $this->redirect('/admin/change-password');
-        }
-        
-        return $this->view('admin/change-password');
+    public function settings()
+    {
+        $data = [
+            'title' => 'System Settings',
+            'settings' => $this->getSystemSettings()
+        ];
+
+        return $this->view('admin/settings', $data);
     }
 
-    public function tickets() {
-        if (!isset($_SESSION['alogin'])) {
-            $this->redirect('/admin/login');
-        }
-        
-        $tickets = $this->ticketModel->findAll();
-        return $this->view('admin/tickets', ['tickets' => $tickets]);
+    private function getSystemSettings()
+    {
+        // TODO: Implement system settings retrieval
+        return [
+            'site_name' => 'Small CRM',
+            'timezone' => 'UTC',
+            'maintenance_mode' => false
+        ];
     }
 }

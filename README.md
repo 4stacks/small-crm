@@ -34,7 +34,7 @@ A modern Customer Relationship Management (CRM) system built with PHP following 
 
 ## Technical Stack
 
-- PHP 8.0+
+- PHP 8.1+
 - MySQL 8.0+
 - Bootstrap 5
 - Docker & Docker Compose
@@ -48,6 +48,9 @@ small-crm/
 │   ├── Models/           # Model classes
 │   ├── Views/            # View templates
 │   └── Core/             # Core framework classes
+├── database/              # Database migrations and seeds
+│   ├── migrations/       # Database structure
+│   └── seeds/           # Sample data
 ├── config/                # Configuration files
 │   ├── config.php        # Main configuration
 │   └── routes.php        # Route definitions
@@ -85,19 +88,120 @@ small-crm/
    cd small-crm
    ```
 
-2. Start the Docker containers:
+2. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Start the Docker containers:
    ```bash
    docker-compose up -d
    ```
 
+4. Set up the database:
+   ```bash
+   # Run migrations and seed the database
+   docker-compose exec app php database/setup.php --fresh --seed
+   ```
+
 The application will be available at http://localhost:8080
 
-Database connection details:
-- Host: localhost
-- Port: 3306
-- Database: small_crm
-- Username: crm_user
-- Password: crm_password
+### Default Login Credentials
+
+After seeding the database, you can log in with these default accounts:
+
+**Admin User:**
+- Email: admin@example.com
+- Password: admin123
+
+**Regular User:**
+- Email: user@example.com
+- Password: user123
+
+## Database Configuration
+
+The Docker setup includes a MySQL container with the following default configuration:
+
+```env
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=small_crm
+DB_USERNAME=crm_user
+DB_PASSWORD=crm_password
+```
+
+These settings are defined in the `.env` file and can be modified as needed.
+
+## Development
+
+### Rebuilding the Database
+
+To reset the database and reload sample data:
+
+```bash
+docker-compose exec app php database/setup.php --fresh --seed
+```
+
+### Database Management
+
+The project includes a simple database migration system:
+
+- `database/migrations/migrate.php`: Defines the database structure
+- `database/seeds/seed.php`: Provides sample data for testing
+
+### Common Docker Commands
+
+```bash
+# Start the containers
+docker-compose up -d
+
+# Stop the containers
+docker-compose down
+
+# View container logs
+docker-compose logs -f
+
+# Access the PHP container shell
+docker-compose exec app bash
+
+# Access the MySQL shell
+docker-compose exec db mysql -u crm_user -p small_crm
+```
+
+## Testing
+
+The application includes several test users and tickets after seeding. You can:
+
+1. Log in as an admin to:
+   - Manage users
+   - View all tickets
+   - Monitor system activity
+   - Change system settings
+
+2. Log in as a regular user to:
+   - Create and manage tickets
+   - Update your profile
+   - View your activity history
+
+## Security Notes
+
+1. Change default passwords in production
+2. Update the `.env` file with secure credentials
+3. Configure proper email settings for notifications
+4. Enable HTTPS in production
+5. Regularly update dependencies
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ### Docker Commands
 - Start containers: `docker-compose up -d`

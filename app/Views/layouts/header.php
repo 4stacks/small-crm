@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,15 @@
     
     <!-- Custom CSS -->
     <link href="/assets/css/style.css" rel="stylesheet">
+    
+    <style>
+        /* Ensure LTR text direction globally */
+        html, body {
+            direction: ltr;
+        }
+    </style>
 </head>
-<body>
+<body dir="ltr">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Small CRM</a>
