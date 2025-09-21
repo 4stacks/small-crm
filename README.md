@@ -1,29 +1,102 @@
 # Small CRM
-A small CRM
 
-How to run the Small CRM  Project
-1. Download the  zip file
+A small Customer Relationship Management (CRM) system built with PHP following the MVC pattern.
 
-2. Extract the file and copy crm folder
+## Project Structure
 
-3.Paste inside root directory(for xampp xampp/htdocs, for wamp wamp/www, for lamp var/www/html)
+```
+small-crm/
+├── app/                    # Application core files
+│   ├── Controllers/       # Controller classes
+│   ├── Models/           # Model classes
+│   ├── Views/            # View templates
+│   └── Core/             # Core framework classes
+├── config/                # Configuration files
+├── public/                # Publicly accessible files
+│   ├── assets/           # CSS, JS, images
+│   ├── index.php         # Front controller
+│   └── .htaccess         # Public directory rules
+└── .htaccess             # Main URL rewriting rules
+```
 
-4. Open PHPMyAdmin (http://localhost/phpmyadmin)
+## Requirements
 
-5. Create a database with name crm
+- PHP 7.4 or higher
+- MySQL 5.7 or higher
+- Apache web server with mod_rewrite enabled
+- Composer (for future dependency management)
 
-6. Import crm.sql file(given inside the zip package in SQL file folder)
+## Installation
 
-7.Run the script http://localhost/crm (frontend)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/4stacks/small-crm.git
+   ```
 
-8.Run the script http://localhost/crm/admin 
+2. Create a MySQL database named 'crm'
+   ```sql
+   CREATE DATABASE crm;
+   ```
 
-Credential for admin panel :
+3. Import the database schema:
+   ```bash
+   mysql -u your_username -p crm < crm.sql
+   ```
 
-Username: admin
-Password: admin
+4. Configure your database connection:
+   - Edit `/config/config.php` with your database credentials
 
-Credential for user panel :
+5. Set up your web server:
+   - Point your web root to the `/public` directory
+   - Ensure mod_rewrite is enabled
+   - Verify .htaccess files are allowed
 
-Username: phpgurukulteam@gmail.com
-Password: Demo@123
+## Default Credentials
+
+### Admin Panel
+- URL: `/admin`
+- Username: admin
+- Password: admin
+
+### User Panel
+- URL: `/`
+- Email: demo@example.com
+- Password: demo123
+
+## Features
+
+- User Authentication
+- User Profile Management
+- Support Ticket System
+- Quote Request Management
+- Admin Dashboard
+- User Access Logs
+- Responsive Design
+
+## Security Features
+
+- Password Hashing
+- Session Management
+- XSS Protection
+- CSRF Protection
+- SQL Injection Prevention
+- Input Validation
+- Secure File Handling
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Original template design by [Template Provider]
+- Icons by Font Awesome
+- CSS Framework: Bootstrap
