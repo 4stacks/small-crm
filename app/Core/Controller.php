@@ -7,6 +7,25 @@ class Controller {
     public function __construct() {
         $this->auth = new Auth();
     }
+    
+    protected function requireAuth() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+    }
+    
+    protected function getCurrentUser() {
+        return isset($_SESSION['user']) ? $_SESSION['user'] : null;
+    }
+    
+    protected function isPost() {
+        return $_SERVER['REQUEST_METHOD'] === 'POST';
+    }
+    
+    protected function isGet() {
+        return $_SERVER['REQUEST_METHOD'] === 'GET';
+    }
 
     protected function view($name, $data = []) {
         // Make view helper functions available
@@ -68,15 +87,50 @@ class Controller {
         exit();
     }
 
-    protected function isPost() {
-        return $_SERVER['REQUEST_METHOD'] === 'POST';
-    }
-
     protected function getPost($key = null) {
         if ($key === null) {
             return $_POST;
         }
         return isset($_POST[$key]) ? $_POST[$key] : null;
+    }
+    
+    protected function validate($data, $rules) {
+        $errors = [];
+        foreach ($rules as $field => $rule) {
+            $ruleSet = explode('|', $rule);
+            foreach ($ruleSet as $singleRule) {
+                $ruleParts = explode(':', $singleRule);
+                $ruleName = $ruleParts[0];
+                $ruleValue = isset($ruleParts[1]) ? $ruleParts[1] : null;
+                
+                switch ($ruleName) {
+                    case 'required':
+                        if (empty($data[$field])) {
+                            $errors[$field][] = ucfirst($field) . ' is required';
+                        }
+                        break;
+                    case 'min':
+                        if (strlen($data[$field]) < $ruleValue) {
+                            $errors[$field][] = ucfirst($field) . ' must be at least ' . $ruleValue . ' characters';
+                        }
+                        break;
+                    case 'max':
+                        if (strlen($data[$field]) > $ruleValue) {
+                            $errors[$field][] = ucfirst($field) . ' must not exceed ' . $ruleValue . ' characters';
+                        }
+                        break;
+                }
+            }
+        }
+        return $errors;
+    }
+    
+    protected function error($message, $code = 404) {
+        http_response_code($code);
+        return $this->view('error', [
+            'message' => $message,
+            'code' => $code
+        ]);
     }
 
     protected function getQuery($key = null) {

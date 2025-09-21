@@ -20,7 +20,7 @@ class TicketController extends Controller {
         $user = $this->getCurrentUser();
         $tickets = $this->ticketModel->findBy(['user_id' => $user['id']], 'created_at DESC');
 
-        return $this->render('tickets/index', [
+        return $this->view('tickets/index', [
             'tickets' => $tickets
         ]);
     }
@@ -29,9 +29,9 @@ class TicketController extends Controller {
         if ($this->isPost()) {
             $user = $this->getCurrentUser();
             $data = [
-                'subject' => $this->getInput('subject'),
-                'description' => $this->getInput('description'),
-                'priority' => $this->getInput('priority'),
+                'subject' => $this->getPost('subject'),
+                'description' => $this->getPost('description'),
+                'priority' => $this->getPost('priority'),
                 'user_id' => $user['id'],
                 'status' => 'open'
             ];
@@ -50,13 +50,13 @@ class TicketController extends Controller {
                 $errors['create'] = ['Failed to create ticket'];
             }
 
-            return $this->render('tickets/create', [
+            return $this->view('tickets/create', [
                 'error' => $errors,
                 'ticket' => $data
             ]);
         }
 
-        return $this->render('tickets/create');
+        return $this->view('tickets/create');
     }
 
     public function show($id) {
@@ -80,7 +80,7 @@ class TicketController extends Controller {
             $comment['user_name'] = $commentUser['name'];
         }
 
-        return $this->render('tickets/show', [
+        return $this->view('tickets/show', [
             'ticket' => $ticket,
             'comments' => $comments
         ]);
@@ -98,7 +98,7 @@ class TicketController extends Controller {
             return $this->error('Ticket not found', 404);
         }
 
-        $content = $this->getInput('content');
+        $content = $this->getPost('content');
         $errors = $this->validate(['content' => $content], [
             'content' => 'required|min:2'
         ]);

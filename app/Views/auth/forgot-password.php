@@ -1,27 +1,25 @@
-<?php $view->includeView("layouts/header"); ?>
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Reset Password</div>
                 <div class="card-body">
-                    <?php if (isset($data['error'])): ?>
+                    <?php if (isset($error)): ?>
                         <div class="alert alert-danger">
-                            <?php echo $data['error']; ?>
+                            <?php echo $error; ?>
                         </div>
                     <?php endif; ?>
                     
-                    <?php if (isset($data['success'])): ?>
+                    <?php if (isset($message)): ?>
                         <div class="alert alert-success">
-                            <?php echo $data['success']; ?>
+                            <?php echo $message; ?>
                         </div>
                     <?php endif; ?>
                     
                     <form method="POST" action="/forgot-password">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="reset-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="reset-email" name="email" required>
                         </div>
                         
                         <div class="d-grid">
@@ -37,5 +35,3 @@
         </div>
     </div>
 </div>
-
-<?php $view->includeView("layouts/footer"); ?>

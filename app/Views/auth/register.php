@@ -1,36 +1,38 @@
-<?php $view->includeView("layouts/header"); ?>
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">Register</div>
                 <div class="card-body">
-                    <?php if (isset($data['error'])): ?>
+                    <?php if (isset($errors)): ?>
                         <div class="alert alert-danger">
-                            <?php echo $data['error']; ?>
+                            <ul class="mb-0">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?php echo $error; ?></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                     <?php endif; ?>
                     
                     <form method="POST" action="/register">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <label for="register-name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="register-name" name="name" required value="<?php echo isset($data['name']) ? htmlspecialchars($data['name']) : ''; ?>">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="register-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="register-email" name="email" required value="<?php echo isset($data['email']) ? htmlspecialchars($data['email']) : ''; ?>">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <label for="register-password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="register-password" name="password" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="confirm_password" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            <label for="register-confirm-password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="register-confirm-password" name="confirm_password" required>
                         </div>
                         
                         <div class="d-grid">
