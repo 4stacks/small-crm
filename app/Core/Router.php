@@ -1,28 +1,42 @@
 <?php
 namespace App\Core;
 
-class Router {
+/**
+ * Router Class
+ */
+class Router
+{
+    /**
+     * Routes array
+     * @var array
+     */
     private $routes = [];
+
+    /**
+     * Parameters array
+     * @var array
+     */
     private $params = [];
 
-    public function add($route, $params = []) {
-        // Convert the route to a regular expression
-        $route = preg_replace('/\//', '\\/', $route);
-        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
-        $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
-        $route = '/^' . $route . '$/i';
-
+    /**
+     * Add a route
+     * @param string $route
+     * @param array $params
+     */
+    public function add($route, $params = [])
+    {
         $this->routes[$route] = $params;
     }
 
-    public function match($url) {
+    /**
+     * Match the route to the routes in the routing table
+     * @param string $url
+     * @return boolean
+     */
+    private function match($url)
+    {
         foreach ($this->routes as $route => $params) {
-            if (preg_match($route, $url, $matches)) {
-                foreach ($matches as $key => $match) {
-                    if (is_string($key)) {
-                        $params[$key] = $match;
-                    }
-                }
+            if ($url === $route) {
                 $this->params = $params;
                 return true;
             }
@@ -30,41 +44,32 @@ class Router {
         return false;
     }
 
-    public function dispatch($url) {
-        $url = $this->removeQueryStringVariables($url);
-
+    /**
+     * Dispatch the route, creating the controller object and running the
+     * action method
+     * @param string $url
+     * @return void
+     */
+    public function dispatch($url)
+    {
         if ($this->match($url)) {
             $controller = $this->params['controller'];
-            $controller = $this->convertToStudlyCaps($controller);
             $controller = "App\\Controllers\\{$controller}Controller";
 
             if (class_exists($controller)) {
                 $controller_object = new $controller();
-
                 $action = $this->params['action'];
-                $action = $this->convertToCamelCase($action);
 
                 if (method_exists($controller_object, $action)) {
-                    return $controller_object->$action();
+                    $controller_object->$action();
+                } else {
+                    throw new \Exception("Method $action not found in controller $controller");
                 }
+            } else {
+                throw new \Exception("Controller class $controller not found");
             }
+        } else {
+            throw new \Exception('No route matched.', 404);
         }
-        throw new \Exception('No route matched.', 404);
-    }
-
-    private function convertToStudlyCaps($string) {
-        return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
-    }
-
-    private function convertToCamelCase($string) {
-        return lcfirst($this->convertToStudlyCaps($string));
-    }
-
-    private function removeQueryStringVariables($url) {
-        if ($url != '') {
-            $parts = explode('?', $url, 2);
-            return $parts[0];
-        }
-        return $url;
     }
 }

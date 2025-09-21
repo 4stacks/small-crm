@@ -22,12 +22,23 @@ $config = require_once ROOT_PATH . '/config/config.php';
 // Initialize Router
 $router = new \App\Core\Router();
 
+// Load routes from config
+$routes = require_once ROOT_PATH . '/config/routes.php';
+
 // Define routes
-$router->add('', ['controller' => 'home', 'action' => 'index']);
-$router->add('login', ['controller' => 'auth', 'action' => 'login']);
-$router->add('register', ['controller' => 'auth', 'action' => 'register']);
-$router->add('dashboard', ['controller' => 'dashboard', 'action' => 'index']);
-$router->add('tickets', ['controller' => 'ticket', 'action' => 'index']);
+foreach ($routes as $url => $params) {
+    $router->add($url, $params);
+}
+
+// Dispatch the route
+$uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+try {
+    $router->dispatch($uri);
+} catch (\Exception $e) {
+    // Handle 404 or other errors
+    http_response_code($e->getCode() === 404 ? 404 : 500);
+    echo $e->getMessage();
+}
 $router->add('tickets/create', ['controller' => 'ticket', 'action' => 'create']);
 $router->add('quotes', ['controller' => 'quote', 'action' => 'index']);
 $router->add('quotes/create', ['controller' => 'quote', 'action' => 'create']);
