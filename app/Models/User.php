@@ -1,65 +1,110 @@
 <?php
+
 namespace App\Models;
 
 use App\Core\Model;
 
-class User extends Model {
-    protected $table = 'user';
+class User extends Model
+{
+    protected $table = 'users';
+    protected $fillable = ['name', 'email', 'password', 'phone', 'type'];
 
-    public function authenticate($email, $password) {
-        $email = $this->db->escapeString($email);
-        $password = $this->db->escapeString($password);
+    /**
+     * Authenticate user
+     * @param string $email
+     * @param string $password
+     * @return array|false
+     */
+    public function authenticate($email, $password)
+    {
+        $user = $this->findByEmail($email);
         
-        $result = $this->db->query(
-            "SELECT * FROM {$this->table} 
-            WHERE email = '{$email}' 
-            AND password = '{$password}' 
-            LIMIT 1"
-        );
+        if ($user && $this->verifyPassword($password, $user['password'])) {
+            unset($user['password']); // Don't return password hash
+            return $user;
+        }
         
-        return mysqli_fetch_assoc($result);
+        return false;
     }
 
-    public function findByEmail($email) {
-        $email = $this->db->escapeString($email);
-        $result = $this->db->query(
-            "SELECT * FROM {$this->table} 
-            WHERE email = '{$email}' 
-            LIMIT 1"
-        );
-        
-        return mysqli_fetch_assoc($result);
+    /**
+     * Find user by email
+     * @param string $email
+     * @return array|false
+     */
+    public function findByEmail($email)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch();
     }
 
-    public function updatePassword($userId, $newPassword) {
-        $userId = $this->db->escapeString($userId);
-        $newPassword = $this->db->escapeString($newPassword);
+    /**
+     * Create a new user
+     * @param array $data
+     * @return int|false
+     */
+    public function create(array $data)
+    {
+        if (isset($data['password'])) {
+            $data['password'] = $this->hashPassword($data['password']);
+        }
         
-        return $this->db->query(
-            "UPDATE {$this->table} 
-            SET password = '{$newPassword}' 
-            WHERE id = '{$userId}'"
-        );
+        return parent::create($data);
     }
 
-    public function logAccess($userId, $data) {
-        $userId = $this->db->escapeString($userId);
-        $data['user_id'] = $userId;
+    /**
+     * Update user
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update($id, array $data)
+    {
+        if (isset($data['password'])) {
+            $data['password'] = $this->hashPassword($data['password']);
+        }
         
-        return $this->db->query(
-            "INSERT INTO usercheck 
-            (user_id, logindate, logintime, username, email, ip, mac, city, country) 
-            VALUES (
-                '{$data['user_id']}',
-                '{$data['logindate']}',
-                '{$data['logintime']}',
-                '{$data['username']}',
-                '{$data['email']}',
-                '{$data['ip']}',
-                '{$data['mac']}',
-                '{$data['city']}',
-                '{$data['country']}'
-            )"
-        );
+        return parent::update($id, $data);
+    }
+
+    /**
+     * Verify password
+     * @param string $password
+     * @param string $hash
+     * @return bool
+     */
+    public function verifyPassword($password, $hash)
+    {
+        return password_verify($password, $hash);
+    }
+
+    /**
+     * Hash password
+     * @param string $password
+     * @return string
+     */
+    private function hashPassword($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    /**
+     * Change user password
+     * @param int $id
+     * @param string $oldPassword
+     * @param string $newPassword
+     * @return bool
+     */
+    public function changePassword($id, $oldPassword, $newPassword)
+    {
+        $user = $this->find($id);
+        
+        if ($user && $this->verifyPassword($oldPassword, $user['password'])) {
+            return $this->update($id, ['password' => $newPassword]);
+        }
+        
+        return false;
     }
 }

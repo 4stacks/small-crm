@@ -1,81 +1,51 @@
-<?php
-$title = 'Register';
-$bodyClass = 'error-body no-top';
-?>
+<?php require_once APP_ROOT . '/Views/layouts/header.php'; ?>
 
 <div class="container">
-    <div class="row login-container">
-        <div class="col-md-5">
-            <h2>Register</h2>
-            <p>Create your account for CRM access.</p>
-            <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-error">
-                    <button class="close" data-dismiss="alert">×</button>
-                    <?php echo $_SESSION['error']; ?>
-                </div>
-            <?php endif; ?>
-            <form action="/register" method="post" class="validate">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="form-group">
-                            <label class="form-label">Name</label>
-                            <div class="controls">
-                                <div class="input-with-icon right">
-                                    <i class=""></i>
-                                    <input type="text" name="name" class="form-control" required>
-                                </div>
-                            </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Register</div>
+                <div class="card-body">
+                    <?php if (isset($data['error'])): ?>
+                        <div class="alert alert-danger">
+                            <?php echo $data['error']; ?>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <div class="controls">
-                                <div class="input-with-icon right">
-                                    <i class=""></i>
-                                    <input type="email" name="email" class="form-control" required>
-                                </div>
-                            </div>
+                    <?php endif; ?>
+                    
+                    <form method="POST" action="/register">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Password</label>
-                            <div class="controls">
-                                <div class="input-with-icon right">
-                                    <i class=""></i>
-                                    <input type="password" name="password" class="form-control" required>
-                                </div>
-                            </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Phone</label>
-                            <div class="controls">
-                                <div class="input-with-icon right">
-                                    <i class=""></i>
-                                    <input type="text" name="phone" class="form-control" maxlength="10" required>
-                                </div>
-                            </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Gender</label>
-                            <div class="controls">
-                                <select name="gender" class="form-control" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="m">Male</option>
-                                    <option value="f">Female</option>
-                                </select>
-                            </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                         </div>
-                        <div class="form-group">
-                            <div class="controls">
-                                <button class="btn btn-primary btn-cons pull-right" name="submit" type="submit">Register</button>
-                            </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
                         </div>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <span>Already have an account?</span>
+                        <a href="/login">Login here</a>
                     </div>
-                </div>
-            </form>
-            <div class="row">
-                <div class="col-md-10">
-                    Already have an account? <a href="/login">Login here</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php require_once APP_ROOT . '/Views/layouts/footer.php'; ?>

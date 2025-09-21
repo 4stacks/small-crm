@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">Login</div>
+                <div class="card-header">Reset Password</div>
                 <div class="card-body">
                     <?php if (isset($data['error'])): ?>
                         <div class="alert alert-danger">
@@ -12,31 +12,26 @@
                         </div>
                     <?php endif; ?>
                     
-                    <form method="POST" action="/login">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
+                    <form method="POST" action="/reset-password">
+                        <input type="hidden" name="token" value="<?php echo $data['token']; ?>">
                         
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">New Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button type="submit" class="btn btn-primary">Reset Password</button>
                         </div>
                     </form>
                     
                     <div class="mt-3 text-center">
-                        <a href="/forgot-password">Forgot Password?</a>
-                        <span class="mx-2">|</span>
-                        <a href="/register">Need an account?</a>
+                        <a href="/login">Back to Login</a>
                     </div>
                 </div>
             </div>
