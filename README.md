@@ -1,6 +1,43 @@
 # Small CRM
 
-A small Customer Relationship Management (CRM) system built with PHP following the MVC pattern.
+A modern Customer Relationship Management (CRM) system built with PHP following the MVC architecture.
+
+## Features
+
+### Authentication System
+- User registration with email verification
+- Secure login with remember me functionality
+- Password reset capability
+- Session management
+- Role-based access control (Admin/User)
+
+### Ticket Management
+- Create and manage support tickets
+- Priority levels (Low/Medium/High)
+- Status tracking (Open/In Progress/Closed)
+- Comment system on tickets
+- File attachments support
+- Email notifications for updates
+
+### Admin Dashboard
+- User management
+- Ticket overview and statistics
+- Activity monitoring
+- System settings
+
+### Security Features
+- PDO with prepared statements for DB operations
+- Password hashing using PHP's password_hash
+- CSRF protection
+- XSS prevention
+- Input validation and sanitization
+
+## Technical Stack
+
+- PHP 8.0+
+- MySQL 8.0+
+- Bootstrap 5
+- Docker & Docker Compose
 
 ## Project Structure
 
@@ -116,15 +153,204 @@ Database connection details:
 - User Access Logs
 - Responsive Design
 
+## Docker Setup
+
+### Prerequisites
+- Docker
+- Docker Compose
+- Git
+
+### Installation Steps
+
+1. Clone the repository:
+```bash
+git clone https://github.com/4stacks/small-crm.git
+cd small-crm
+```
+
+2. Copy environment file:
+```bash
+cp .env.example .env
+```
+
+3. Update the .env file with your desired configuration:
+```env
+DB_HOST=db
+DB_PORT=3306
+DB_NAME=small_crm
+DB_USER=crm_user
+DB_PASS=your_secure_password
+```
+
+4. Build and start the Docker containers:
+```bash
+docker-compose up -d
+```
+
+5. Install PHP dependencies:
+```bash
+docker-compose exec app composer install
+```
+
+6. Database Setup and Management:
+
+#### Initial Database Setup
+```bash
+# Fresh install with sample data
+docker-compose exec app php database/setup.php --fresh --seed
+
+# Fresh install without sample data
+docker-compose exec app php database/setup.php --fresh
+
+# Run only pending migrations
+docker-compose exec app php database/setup.php
+```
+
+#### Database Migrations
+```bash
+# Run specific migration
+docker-compose exec app php database/migrations/migrate.php
+
+# Rollback last migration
+docker-compose exec app php database/migrations/migrate.php --rollback
+
+# Reset and recreate all tables
+docker-compose exec app php database/migrations/migrate.php --fresh
+
+# Show migration status
+docker-compose exec app php database/migrations/migrate.php --status
+```
+
+#### Database Seeding
+```bash
+# Seed the database with sample data
+docker-compose exec app php database/seeds/seed.php
+
+# Seed specific data
+docker-compose exec app php database/seeds/seed.php --class=UsersSeeder
+docker-compose exec app php database/seeds/seed.php --class=TicketsSeeder
+
+# Fresh install with specific seeders
+docker-compose exec app php database/setup.php --fresh --seed --class=UsersSeeder,TicketsSeeder
+```
+
+#### Database Backup and Restore
+```bash
+# Create backup
+docker-compose exec db mysqldump -u root -p small_crm > backup.sql
+
+# Restore from backup
+docker-compose exec -T db mysql -u root -p small_crm < backup.sql
+
+# Create backup of specific tables
+docker-compose exec db mysqldump -u root -p small_crm users tickets > tables_backup.sql
+```
+
+#### Troubleshooting Database Issues
+```bash
+# Check database status
+docker-compose exec db mysql -u root -p -e "SHOW DATABASES;"
+docker-compose exec db mysql -u root -p -e "USE small_crm; SHOW TABLES;"
+
+# Reset database user password
+docker-compose exec db mysql -u root -p -e "ALTER USER 'crm_user'@'%' IDENTIFIED BY 'new_password';"
+
+# Check database logs
+docker-compose logs db
+```
+
+7. Access the application at http://localhost:8080
+
+### Docker Container Structure
+
+The application runs in three containers:
+- **app**: PHP-FPM 8.0 application server
+- **web**: Nginx web server
+- **db**: MySQL 8.0 database server
+
+### Useful Docker Commands
+
+```bash
+# Start containers
+docker-compose up -d
+
+# Stop containers
+docker-compose down
+
+# View container logs
+docker-compose logs -f
+
+# Access PHP container shell
+docker-compose exec app bash
+
+# Access MySQL shell
+docker-compose exec db mysql -u root -p
+
+# Rebuild containers
+docker-compose up -d --build
+```
+
+### Common Issues and Solutions
+
+#### Database Connection Issues
+```bash
+# Check if database container is running
+docker-compose ps
+
+# Verify database connection from PHP container
+docker-compose exec app php -r "var_dump(mysqli_connect('db', 'root', 'your_password', 'small_crm'));"
+
+# Check database logs
+docker-compose logs db
+```
+
+#### Permission Issues
+```bash
+# Fix storage directory permissions
+docker-compose exec app chown -R www:www storage/
+docker-compose exec app chmod -R 755 storage/
+
+# Fix cache directory permissions
+docker-compose exec app php artisan cache:clear
+docker-compose exec app chmod -R 775 bootstrap/cache
+```
+
+#### Container Issues
+```bash
+# Remove all containers and volumes (fresh start)
+docker-compose down -v
+
+# Rebuild specific container
+docker-compose up -d --build app
+
+# Check container logs
+docker-compose logs -f app
+docker-compose logs -f web
+docker-compose logs -f db
+```
+
+#### PHP Issues
+```bash
+# Check PHP version and extensions
+docker-compose exec app php -v
+docker-compose exec app php -m
+
+# Clear PHP opcode cache
+docker-compose exec app php -r "opcache_reset();"
+
+# Check PHP error logs
+docker-compose exec app tail -f /var/log/php-fpm/error.log
+```
+
 ## Security Features
 
-- Password Hashing
-- Session Management
-- XSS Protection
-- CSRF Protection
-- SQL Injection Prevention
-- Input Validation
-- Secure File Handling
+- Password Hashing using PHP's password_hash
+- Secure Session Management
+- XSS Protection with output escaping
+- CSRF Protection with tokens
+- SQL Injection Prevention using PDO
+- Input Validation and Sanitization
+- Secure File Handling with type checking
 
 ## Contributing
 
