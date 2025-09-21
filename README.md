@@ -12,39 +12,82 @@ small-crm/
 │   ├── Views/            # View templates
 │   └── Core/             # Core framework classes
 ├── config/                # Configuration files
+│   ├── config.php        # Main configuration
+│   └── routes.php        # Route definitions
 ├── public/                # Publicly accessible files
 │   ├── assets/           # CSS, JS, images
+│   ├── vendor/          # Third-party libraries
 │   ├── index.php         # Front controller
 │   └── .htaccess         # Public directory rules
+├── storage/               # Application storage
+├── docker-compose.yml     # Docker configuration
+├── Dockerfile            # PHP container definition
+├── .env                  # Environment variables
 └── .htaccess             # Main URL rewriting rules
 ```
 
 ## Requirements
 
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
+### Option 1: Docker (Recommended)
+- Docker
+- Docker Compose
+
+### Option 2: Manual Installation
+- PHP 8.1 or higher
+- MySQL 8.0 or higher
 - Apache web server with mod_rewrite enabled
 - Composer (for future dependency management)
 
 ## Installation
+
+### Using Docker (Recommended)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/4stacks/small-crm.git
+   cd small-crm
+   ```
+
+2. Start the Docker containers:
+   ```bash
+   docker-compose up -d
+   ```
+
+The application will be available at http://localhost:8080
+
+Database connection details:
+- Host: localhost
+- Port: 3306
+- Database: small_crm
+- Username: crm_user
+- Password: crm_password
+
+### Docker Commands
+- Start containers: `docker-compose up -d`
+- Stop containers: `docker-compose down`
+- View logs: `docker-compose logs`
+- Rebuild containers: `docker-compose up --build`
+
+### Manual Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/4stacks/small-crm.git
    ```
 
-2. Create a MySQL database named 'crm'
+2. Create a MySQL database:
    ```sql
-   CREATE DATABASE crm;
+   CREATE DATABASE small_crm;
    ```
 
 3. Import the database schema:
    ```bash
-   mysql -u your_username -p crm < crm.sql
+   mysql -u your_username -p small_crm < crm.sql
    ```
 
 4. Configure your database connection:
-   - Edit `/config/config.php` with your database credentials
+   - Copy `.env.example` to `.env`
+   - Edit `.env` with your database credentials
 
 5. Set up your web server:
    - Point your web root to the `/public` directory
